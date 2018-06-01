@@ -94,7 +94,7 @@ accuracy = tf.reduce_mean(tf.cast(tf.equal(predicted, Y), dtype=tf.float32))
 # acc_summ = tf.summary.scalar("accuracy", accuracy)
 
 training_epochs = 10
-Batch_size = 1
+Batch_size = 32
 total_batch = int(len(train_X) / Batch_size)
 save_path = './saved/model'
 saver = tf.train.Saver()
