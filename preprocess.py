@@ -10,10 +10,6 @@ def read_data(filename):
         data = data[1:]
     return data
 
-def tokenize(doc):
-
-    return ['/'.join(t) for t in twitter.pos(doc, norm=True, stem=True)]
-
 def word2vec_train(tokens):
     model = gensim.models.Word2Vec(size=300, sg=1, alpha=0.025, min_alpha=0.025, seed=410)
     model.build_vocab(tokens)
@@ -23,6 +19,10 @@ def word2vec_train(tokens):
 def word2vec_load():
     model = gensim.models.word2vec.Word2Vec.load('word2vec.model')
     return model
+
+def tokenize(doc):
+
+    return ['/'.join(t) for t in twitter.pos(doc, norm=True, stem=True)]
 
 def embedding(model, sent):
     embedded = []
@@ -41,3 +41,7 @@ def zero_padding(max_length, seq, embedding_size):
     else:
         zero_pad[0:len(seq) * embedding_size] = seq_flat
     return zero_pad
+
+def preprocessing(word2vec, maxseq_length, embedding_size, dataset):
+
+    return [zero_padding(maxseq_length, embedding(word2vec, tokenize(row)), embedding_size) for row in dataset]
