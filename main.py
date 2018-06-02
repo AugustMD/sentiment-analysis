@@ -3,11 +3,12 @@ import numpy as np
 from preprocess import *
 from logistic import Logistic
 from dnn import DNN
+from rnn import RNN
 import time
 
 maxseq_length = 100
 embedding_size = 300
-training_epochs = 10
+training_epochs = 5
 batch_size = 32
 learning_rate = 0.001
 
@@ -19,7 +20,8 @@ train_Y = train_data[:,[-1]]
 word2vec = word2vec_load()
 
 # model = Logistic(maxseq_length, embedding_size, learning_rate)
-model = DNN(maxseq_length, embedding_size, learning_rate)
+# model = DNN(maxseq_length, embedding_size, learning_rate)
+model = RNN(batch_size, maxseq_length, embedding_size, learning_rate)
 
 with tf.Session() as sess:
     total_batch = int(len(train_X) / batch_size)
