@@ -2,11 +2,11 @@ import tensorflow as tf
 
 class CNN():
 
-    def __init__(self, batch_size, maxseq_length, embedding_size, num_filters, learning_rate=0.001):
+    def __init__(self, batch_size, maxseq_length, embedding_size, learning_rate=0.001):
         self.batch_size = batch_size
         self.maxseq_length = maxseq_length
         self.embedding_size = embedding_size
-        self.num_filters = num_filters
+        self.num_filters = 64
         self.learning_rate = learning_rate
         self._build_net()
 

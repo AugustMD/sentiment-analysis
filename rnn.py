@@ -2,11 +2,11 @@ import tensorflow as tf
 
 class RNN():
 
-    def __init__(self, batch_size, maxseq_length, embedding_size, hidden_size, learning_rate=0.001):
+    def __init__(self, batch_size, maxseq_length, embedding_size, learning_rate=0.001):
         self.batch_size = batch_size
         self.maxseq_length = maxseq_length
         self.embedding_size = embedding_size
-        self.hidden_size = hidden_size
+        self.hidden_size = 64
         self.learning_rate = learning_rate
         self._build_net()
 

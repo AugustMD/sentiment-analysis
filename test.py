@@ -9,7 +9,7 @@ from cnn import CNN
 
 # model_type = logistic / dnn / rnn / lstm / cnn
 model_type = 'lstm'
-test_epoch = 0
+test_epoch = 2
 maxseq_length = 100
 embedding_size = 300
 batch_size = 32
@@ -29,13 +29,13 @@ elif model_type == 'dnn':
 elif model_type == 'rnn':
     model = RNN(batch_size, maxseq_length, embedding_size)
 elif model_type == 'lstm':
-    model = LSTM(batch_size, maxseq_length, embedding_size)
+    model = LSTM(batch_size, maxseq_length, embedding_size, keep_prob)
 elif model_type == 'cnn':
     model = CNN(batch_size, maxseq_length, embedding_size)
 
 with tf.Session() as sess:
     total_batch = int(len(test_X) / batch_size)
-    save_path = './saved/' + model_type + '/model-' + test_epoch
+    save_path = './saved/' + model_type + '/model-' + str(test_epoch)
 
     sess.run(tf.global_variables_initializer())
     saver = tf.train.Saver()

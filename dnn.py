@@ -2,11 +2,11 @@ import tensorflow as tf
 
 class DNN():
 
-    def __init__(self, maxseq_length, embedding_size, hidden_layer_size, learning_rate=0.001):
+    def __init__(self, maxseq_length, embedding_size, learning_rate=0.001):
         self.maxseq_length = maxseq_length
         self.embedding_size = embedding_size
         self.learning_rate = learning_rate
-        self.hidden_layer_size = hidden_layer_size
+        self.hidden_layer_size = 200
         self._build_net()
 
     def _build_net(self):

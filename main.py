@@ -12,9 +12,6 @@ import time
 model_type = 'lstm'
 maxseq_length = 100
 embedding_size = 300
-hidden_layer_size = 200
-hidden_size = 64
-num_filters = 64
 training_epochs = 5
 batch_size = 32
 learning_rate = 0.001
@@ -30,13 +27,13 @@ word2vec = word2vec_load()
 if model_type == 'logistic':
     model = Logistic(maxseq_length, embedding_size, learning_rate)
 elif model_type == 'dnn':
-    model = DNN(maxseq_length, embedding_size, hidden_layer_size, learning_rate)
+    model = DNN(maxseq_length, embedding_size, learning_rate)
 elif model_type == 'rnn':
-    model = RNN(batch_size, maxseq_length, embedding_size, hidden_size, learning_rate)
+    model = RNN(batch_size, maxseq_length, embedding_size, learning_rate)
 elif model_type == 'lstm':
-    model = LSTM(batch_size, maxseq_length, embedding_size, hidden_size, keep_prob, learning_rate)
+    model = LSTM(batch_size, maxseq_length, embedding_size, keep_prob, learning_rate)
 elif model_type == 'cnn':
-    model = CNN(batch_size, maxseq_length, embedding_size, num_filters, learning_rate)
+    model = CNN(batch_size, maxseq_length, embedding_size, learning_rate)
 
 with tf.Session() as sess:
     merged_summary = tf.summary.merge_all()
@@ -66,9 +63,8 @@ with tf.Session() as sess:
             print('Batch : ', step + 1, '/', total_batch, '(epoch:', epoch, ')',
                   ', BCE in this minibatch: ', cost_val, 'accuracy: ', float(acc))
 
-            if step == total_batch - 1:
-                summary = sess.run(merged_summary, feed_dict={model.X: train_batch_X, model.Y: train_batch_Y})
-                writer.add_summary(summary, global_step=epoch)
+            summary = sess.run(merged_summary, feed_dict={model.X: train_batch_X, model.Y: train_batch_Y})
+            writer.add_summary(summary, global_step=epoch * total_batch + step)
 
         print('epoch:', epoch, ' train_loss:', float(avg_loss / total_batch))
         saver.save(sess, save_path, epoch)
