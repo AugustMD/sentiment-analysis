@@ -1,12 +1,13 @@
 import tensorflow as tf
 
-class RNN():
+class LSTM():
 
-    def __init__(self, batch_size, maxseq_length, embedding_size, hidden_size, learning_rate=0.001):
+    def __init__(self, batch_size, maxseq_length, embedding_size, hidden_size, keep_prob, learning_rate=0.001):
         self.batch_size = batch_size
         self.maxseq_length = maxseq_length
         self.embedding_size = embedding_size
         self.hidden_size = hidden_size
+        self.keep_prob = keep_prob
         self.learning_rate = learning_rate
         self._build_net()
 
@@ -15,12 +16,16 @@ class RNN():
         self.input = tf.reshape(self.X, [-1, self.maxseq_length, self.embedding_size])
         self.Y = tf.placeholder(tf.float32, shape=[None, 1])
 
-        self.cell = tf.contrib.rnn.BasicRNNCell(num_units=self.hidden_size)
-        self.initial_state = self.cell.zero_state(self.batch_size, tf.float32)
-        self.outputs, self.states = tf.nn.dynamic_rnn(self.cell, self.input, initial_state=self.initial_state, dtype=tf.float32)
+        self.fw_cell = tf.contrib.rnn.BasicLSTMCell(num_units=self.hidden_size, state_is_tuple=True)
+        self.fw_cell = tf.contrib.rnn.DropoutWrapper(self.fw_cell, output_keep_prob=self.keep_prob)
 
-        # self.hypothesis = tf.sigmoid(self.outputs[:, -1])
-        self.outputs = tf.reshape(self.outputs, [-1, self.maxseq_length * self.hidden_size])
+        self.bw_cell = tf.contrib.rnn.BasicLSTMCell(num_units=self.hidden_size, state_is_tuple=True)
+        self.bw_cell = tf.contrib.rnn.DropoutWrapper(self.fw_cell, output_keep_prob=self.keep_prob)
+
+        self.outputs, self.states = tf.nn.bidirectional_dynamic_rnn(self.fw_cell, self.bw_cell, self.input, dtype=tf.float32)
+        self.outputs = tf.concat(self.outputs, 2)
+
+        self.outputs = tf.reshape(self.outputs, [-1, 2 * self.maxseq_length * self.hidden_size])
         self.hypothesis = tf.contrib.layers.fully_connected(self.outputs, 1, activation_fn=tf.sigmoid)
 
         self.cost = -tf.reduce_mean(self.Y * tf.log(self.hypothesis + 1e-7) + (1 - self.Y) * tf.log(1 - self.hypothesis + 1e-7))

@@ -18,7 +18,10 @@ class Logistic():
         self.hypothesis = tf.sigmoid(tf.matmul(self.X, self.W) + self.b)
 
         self.cost = -tf.reduce_mean(self.Y * tf.log(self.hypothesis + 1e-7) + (1 - self.Y) * tf.log(1 - self.hypothesis + 1e-7))
+        self.cost_summ = tf.summary.scalar('cost', self.cost)
+
         self.train = tf.train.AdamOptimizer(learning_rate=self.learning_rate).minimize(self.cost)
 
         self.predicted = tf.cast(self.hypothesis > 0.5, dtype=tf.float32)
         self.accuracy = tf.reduce_mean(tf.cast(tf.equal(self.predicted, self.Y), dtype=tf.float32))
+        self.acc_summ = tf.summary.scalar('accuracy', self.accuracy)

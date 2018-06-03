@@ -2,11 +2,11 @@ import tensorflow as tf
 
 class DNN():
 
-    def __init__(self, maxseq_length, embedding_size, learning_rate=0.001):
+    def __init__(self, maxseq_length, embedding_size, hidden_layer_size, learning_rate=0.001):
         self.maxseq_length = maxseq_length
         self.embedding_size = embedding_size
         self.learning_rate = learning_rate
-        self.hidden_layer_size = 200
+        self.hidden_layer_size = hidden_layer_size
         self._build_net()
 
     def _build_net(self):
@@ -56,7 +56,10 @@ class DNN():
         self.hypothesis = tf.sigmoid(tf.matmul(self.L9, self.W10) + self.b10)
 
         self.cost = -tf.reduce_mean(self.Y * tf.log(self.hypothesis + 1e-7) + (1 - self.Y) * tf.log(1 - self.hypothesis + 1e-7))
+        self.cost_summ = tf.summary.scalar('cost', self.cost)
+
         self.train = tf.train.AdamOptimizer(learning_rate=self.learning_rate).minimize(self.cost)
 
         self.predicted = tf.cast(self.hypothesis > 0.5, dtype=tf.float32)
         self.accuracy = tf.reduce_mean(tf.cast(tf.equal(self.predicted, self.Y), dtype=tf.float32))
+        self.acc_summ = tf.summary.scalar('accuracy', self.accuracy)

@@ -4,10 +4,16 @@ from preprocess import *
 from logistic import Logistic
 from dnn import DNN
 from rnn import RNN
+from lstm import LSTM
+from cnn import CNN
 
+# model_type = logistic / dnn / rnn / lstm / cnn
+model_type = 'lstm'
+test_epoch = 0
 maxseq_length = 100
 embedding_size = 300
 batch_size = 32
+keep_prob = 1.0
 
 test_data = read_data('data/test.txt')
 test_data = np.array(test_data)
@@ -16,13 +22,20 @@ test_Y = test_data[:,[-1]]
 
 word2vec = word2vec_load()
 
-# model = Logistic(maxseq_length, embedding_size)
-# model = DNN(maxseq_length, embedding_size)
-model = RNN(batch_size, maxseq_length, embedding_size)
+if model_type == 'logistic':
+    model = Logistic(maxseq_length, embedding_size)
+elif model_type == 'dnn':
+    model = DNN(maxseq_length, embedding_size)
+elif model_type == 'rnn':
+    model = RNN(batch_size, maxseq_length, embedding_size)
+elif model_type == 'lstm':
+    model = LSTM(batch_size, maxseq_length, embedding_size)
+elif model_type == 'cnn':
+    model = CNN(batch_size, maxseq_length, embedding_size)
 
 with tf.Session() as sess:
     total_batch = int(len(test_X) / batch_size)
-    save_path = './saved/model-4'
+    save_path = './saved/' + model_type + '/model-' + test_epoch
 
     sess.run(tf.global_variables_initializer())
     saver = tf.train.Saver()
