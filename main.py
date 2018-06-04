@@ -9,10 +9,10 @@ from cnn import CNN
 import time
 
 # model_type = logistic / dnn / rnn / lstm / cnn
-model_type = 'lstm'
+model_type = 'dnn'
 maxseq_length = 100
 embedding_size = 300
-training_epochs = 5
+training_epochs = 10
 batch_size = 32
 learning_rate = 0.001
 keep_prob = 0.7

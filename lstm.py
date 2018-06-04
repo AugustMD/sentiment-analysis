@@ -6,7 +6,7 @@ class LSTM():
         self.batch_size = batch_size
         self.maxseq_length = maxseq_length
         self.embedding_size = embedding_size
-        self.hidden_size = 256
+        self.hidden_size = 64
         self.keep_prob = keep_prob
         self.learning_rate = learning_rate
         self._build_net()
@@ -23,9 +23,9 @@ class LSTM():
         self.bw_cell = tf.contrib.rnn.DropoutWrapper(self.fw_cell, output_keep_prob=self.keep_prob)
 
         self.outputs, self.states = tf.nn.bidirectional_dynamic_rnn(self.fw_cell, self.bw_cell, self.input, dtype=tf.float32)
-        self.outputs = tf.concat(self.outputs, 2)
-
-        self.outputs = tf.reshape(self.outputs, [-1, 2 * self.maxseq_length * self.hidden_size])
+        # self.outputs = tf.concat(self.outputs, 2)
+        self.outputs = self.outputs[0] + self.outputs[1]
+        self.outputs = tf.reshape(self.outputs, [-1, self.maxseq_length * self.hidden_size])
         self.hypothesis = tf.contrib.layers.fully_connected(self.outputs, 1, activation_fn=tf.sigmoid)
 
         self.cost = -tf.reduce_mean(self.Y * tf.log(self.hypothesis + 1e-7) + (1 - self.Y) * tf.log(1 - self.hypothesis + 1e-7))

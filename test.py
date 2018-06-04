@@ -8,8 +8,8 @@ from lstm import LSTM
 from cnn import CNN
 
 # model_type = logistic / dnn / rnn / lstm / cnn
-model_type = 'lstm'
-test_epoch = 2
+model_type = 'dnn'
+test_epoch = 9
 maxseq_length = 100
 embedding_size = 300
 batch_size = 32
